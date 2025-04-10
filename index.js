@@ -61,10 +61,15 @@ app.post("/api/OrderKicap", async (req, resp) => {
     try {
         let transporter = nodeMailer.createTransport({
             service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASSWORD,
             },
+            logger: true,
+            debug: true
         });
         let cartHtml = req.body.cart.cart.map((item, index) => {
 
