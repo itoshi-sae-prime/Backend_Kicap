@@ -63,12 +63,13 @@ app.post("/api/OrderKicap", async (req, resp) => {
     // }
     try {
         let transporter = nodeMailer.createTransport({
-            service: 'SendGrid',
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD,
-                api_key: process.env.SENDGRID_API_KEY,
-            },
+            host: "smtp.sendgrid.net",
+  port: 587,
+  secure: false,
+  auth: {
+    user: "apikey",
+    pass: process.env.SENDGRID_API_KEY,
+  },
         });
         let cartHtml = req.body.cart.cart.map((item, index) => {
 
