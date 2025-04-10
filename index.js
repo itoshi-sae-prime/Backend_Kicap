@@ -19,12 +19,7 @@ mongoose.connect("mongodb+srv://admin123:050825%21%40%23%24Tt@kicapdb.sxbgl.mong
     .catch(err => console.error("❌ Lỗi kết nối:", err));;
 
 app.use(bodyParse.json({ limit: "50mb" }));
-app.use(cors(
-    {  // Cho phép yêu cầu từ domain này
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-}
-));
+app.use(cors({methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']}));
 dotenv.config();
 app.use(
     bodyParse.urlencoded({
