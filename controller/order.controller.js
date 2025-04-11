@@ -9,8 +9,7 @@ const orderKicap = async (req, resp) => {
     }
     try {
         let transporter = nodeMailer.createTransport({
-            service: 'gmail',
-            host: "smtp.gmail.com",
+            service: 'gmail', // Đủ rồi!
             port: 587,
             secure: false,
             auth: {
