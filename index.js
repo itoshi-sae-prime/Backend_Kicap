@@ -17,8 +17,9 @@ mongoose.connect("mongodb+srv://admin123:050825%21%40%23%24Tt@kicapdb.sxbgl.mong
 
 app.use(bodyParse.json({ limit: "50mb" }));
 app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: 'https://frontend-kicap.vercel.app', // hoặc '*' nếu muốn mở cho tất cả
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 app.use(
     bodyParse.urlencoded({
