@@ -5,7 +5,7 @@ const orderKicap = async (req, resp) => {
     try {
         const { fullName, phone, address, district, city, note, email, cart, total } = req.body;
 
-        if (!email || !cart || !Array.isArray(cart) || cart.length === 0) {
+          if (!email || !cart.cart || !Array.isArray(cart.cart) || cart.cart.length === 0) {
             return resp.status(400).json({ message: "Thông tin đơn hàng không hợp lệ!" });
         }
 
