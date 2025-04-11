@@ -19,7 +19,7 @@ mongoose.connect("mongodb+srv://admin123:050825%21%40%23%24Tt@kicapdb.sxbgl.mong
     .catch(err => console.error("❌ Lỗi kết nối:", err));;
 
 app.use(bodyParse.json({ limit: "50mb" }));
-app.use(cors({  // Cho phép yêu cầu từ domain này
+app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
@@ -63,12 +63,17 @@ app.post("/api/OrderKicap", async (req, resp) => {
     // }
     try {
         let transporter = nodeMailer.createTransport({
-            service: 'SendGrid',
+            service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASSWORD,
                 api_key: process.env.SENDGRID_API_KEY,
             },
+            logger: true,
+            debug: true
         });
         let cartHtml = req.body.cart.cart.map((item, index) => {
 
@@ -153,11 +158,11 @@ app.post("/api/OrderKicap", async (req, resp) => {
 app.post("/api/product", async (req, resp) => {
     try {
         const product = await Product.create(req.body);
-        resp.status(201).json(product);
+        return resp.status(201).json(product);
     } catch (err) {
-        resp.status(500).json(err);
+        return resp.status(500).json(err);
     }
-    resp.status(200).json(req.body);
+    return resp.status(200).json(req.body);
 });
 
 const port = 8000;
