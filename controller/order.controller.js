@@ -1,4 +1,5 @@
 const express = require('express');
+require("dotenv").config();
 const nodeMailer = require('nodemailer');
 const orderKicap = async (req, resp) => {
     const { fullName, phone, address, district, city, note, email, cart, total } = req.body;
