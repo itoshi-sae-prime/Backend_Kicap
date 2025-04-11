@@ -31,10 +31,7 @@ app.use(
 app.use('/api/products', productRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/orders', postOrderRouter);
-const port = 8000;
-app.listen(8000, () => {
-    console.log(`Server is running on ${port}`);
-})
+
 // app.get("/post", (req, resp) => {
 
 // });
@@ -66,6 +63,10 @@ app.listen(8000, () => {
 //     }
 //     return resp.status(200).json(req.body);
 // });
+const port = 8000;
+app.listen(8000, () => {
+    console.log(`Server is running on ${port}`);
+})
 
 
 
