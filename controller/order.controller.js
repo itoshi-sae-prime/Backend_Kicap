@@ -1,6 +1,8 @@
 require('dotenv').config();
+const { evaluateMail } = require('../data/evalutenote');
 const express = require('express');
 const nodeMailer = require('nodemailer');
+const Evaluate = require("../model/evaluate");
 const orderKicap = async (req, resp) => {
     const { fullName, phone, address, district, city, note, email, cart, total } = req.body;
 
@@ -83,6 +85,36 @@ const orderKicap = async (req, resp) => {
         return resp.status(500).json({ message: "Lỗi server", error: err });
     }
 };
+
+
+
+const EvaluateKicap = async (req, resp) => {
+    const { name, phone, email, message } = req.body;
+
+    if (!email || !phone || !message || !name) {
+        return resp.status(400).json({ message: "Thông tin đánh giá không hợp lệ!" });
+    }
+
+    try {
+        const newEvaluate = await Evaluate.create({
+            name,
+            phone,
+            email,
+            message,
+        });
+
+        const allEvaluates = await Evaluate.find().sort({ createdAt: -1 });
+
+        return resp.status(200).json({
+            message: "Đánh giá đã được lưu thành công!",
+            data: allEvaluates,
+        });
+    } catch (error) {
+        console.error("Lỗi khi lưu đánh giá:", error);
+        return resp.status(500).json({ message: "Lỗi server!" });
+    }
+};
 module.exports = {
-    orderKicap
+    orderKicap,
+    EvaluateKicap,
 };

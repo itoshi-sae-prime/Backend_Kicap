@@ -1,3 +1,4 @@
+const slugify = require("../utils/slugify.js");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const url_index = "https://kicap.vn/";
@@ -33,6 +34,127 @@ const scrapeProducts = async (url) => {
         throw new Error(err.message);
     }
 };
+const getDetail = async (url) => {
+    try {
+        const results = await scrapeProducts(url);
+
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title)
+        }));
+
+        return products
+    } catch (err) {
+        throw new Error(err.message);
+    }
+};
+
+// One product detail
+const getKeycapBoDetail = async (req, res) => {
+    const slug = req.params.slug;
+    try {
+        const results = await getDetail(url_keycap_bo);
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title),
+            category: "keycap_bo",
+            type: "Keycap Bộ"
+        }));
+        const product_detail = products.find(p => p.slug === slug);
+
+        if (!product_detail) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+        }
+        return res.status(200).json(product_detail);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+
+};
+const getBanphimcoDetail = async (req, res) => {
+    const slug = req.params.slug;
+    try {
+        const results = await getDetail(url_banphim_co);
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title),
+            category: "banphimco",
+            type: "Bàn Phím Cơ"
+        }));
+        const product_detail = products.find(p => p.slug === slug);
+
+        if (!product_detail) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+        }
+        return res.status(200).json(product_detail);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+const getModsphimDetail = async (req, res) => {
+    const slug = req.params.slug;
+    try {
+        const results = await getDetail(url_mods_banphim_co);
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title),
+            category: "modsphim",
+            type: "Mods Phím"
+        }));
+        const product_detail = products.find(p => p.slug === slug);
+
+        if (!product_detail) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+        }
+        return res.status(200).json(product_detail);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+
+};
+const getChuotDetail = async (req, res) => {
+    const slug = req.params.slug;
+    try {
+        const results = await getDetail(url_chuot);
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title),
+            category: "chuot",
+            type: "Chuột"
+        }));
+        const product_detail = products.find(p => p.slug === slug);
+
+        if (!product_detail) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+        }
+        return res.status(200).json(product_detail);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+
+};
+const getSanphamDetail = async (req, res) => {
+    const slug = req.params.slug;
+    try {
+        const results = await getDetail(url_sanpham);
+        const products = results.map(product => ({
+            ...product,
+            slug: slugify(product.title),
+            category: "All",
+        }));
+        const product_detail = products.find(p => p.slug === slug);
+
+        if (!product_detail) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+        }
+        return res.status(200).json(product_detail);
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+
+};
+
+// List all products
 const getProducts = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
@@ -46,7 +168,12 @@ const getProduct_keycap_bo = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
         const results = await scrapeProducts(url_keycap_bo);
-        resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
+        const new_results = results.map(product => ({
+            ...product,
+            category: "keycap_bo",
+        }));
+        resp.status(200).json(new_results);
+        // resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
     } catch (err) {
         resp.status(500).json({ error: err.message });
     }
@@ -55,7 +182,12 @@ const getProduct_banphimco = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
         const results = await scrapeProducts(url_banphim_co);
-        resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
+        const new_results = results.map(product => ({
+            ...product,
+            category: "banphimco",
+        }));
+        resp.status(200).json(new_results);
+        // resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
     } catch (err) {
         resp.status(500).json({ error: err.message });
     }
@@ -65,7 +197,12 @@ const getProduct_modsphim = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
         const results = await scrapeProducts(url_mods_banphim_co);
-        resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
+        const new_results = results.map(product => ({
+            ...product,
+            category: "modsphim",
+        }));
+        resp.status(200).json(new_results);
+        // resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
     } catch (err) {
         resp.status(500).json({ error: err.message });
     }
@@ -74,7 +211,12 @@ const getProduct_chuot = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
         const results = await scrapeProducts(url_chuot);
-        resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
+        const new_results = results.map(product => ({
+            ...product,
+            category: "chuot",
+        }));
+        resp.status(200).json(new_results);
+        // resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
     } catch (err) {
         resp.status(500).json({ error: err.message });
     }
@@ -83,7 +225,12 @@ const getProduct_sanpham = async (req, resp) => {
     const limit = Number(req.query.limit);
     try {
         const results = await scrapeProducts(url_sanpham);
-        resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
+        const new_results = results.map(product => ({
+            ...product,
+            category: "all",
+        }));
+        resp.status(200).json(new_results);
+        // resp.status(200).json(limit && limit > 0 ? results.slice(0, limit) : results);
     } catch (err) {
         resp.status(500).json({ error: err.message });
     }
@@ -95,4 +242,108 @@ module.exports = {
     getProduct_modsphim,
     getProduct_chuot,
     getProduct_sanpham,
+    getKeycapBoDetail,
+    getBanphimcoDetail,
+    getModsphimDetail,
+    getChuotDetail,
+    getSanphamDetail,
 };
+// const getKeycapBoDetail = async (req, res) => {
+//     const slug = req.params.slug;
+//     try {
+//         const results = await getDetail(url_keycap_bo);
+//         const products = results.map(product => ({
+//             ...product,
+//             slug: slugify(product.title),
+//             category: "keycap_bo",
+//         }));
+//         const product_detail = products.find(p => p.slug === slug);
+
+//         if (!product_detail) {
+//             return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+//         }
+//         return res.status(200).json(product_detail);
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+
+// };
+// const getBanphimcoDetail = async (req, res) => {
+//     const slug = req.params.slug;
+//     try {
+//         const results = await getDetail(url_banphim_co);
+//         const products = results.map(product => ({
+//             ...product,
+//             slug: slugify(product.title),
+//             category: "banphim_co",
+//         }));
+//         const product_detail = products.find(p => p.slug === slug);
+
+//         if (!product_detail) {
+//             return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+//         }
+//         return res.status(200).json(product_detail);
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+// };
+// const getModsphimDetail = async (req, res) => {
+//     const slug = req.params.slug;
+//     try {
+//         const results = await getDetail(url_mods_banphim_co);
+//         const products = results.map(product => ({
+//             ...product,
+//             slug: slugify(product.title),
+//             category: "mods_banphim_co",
+//         }));
+//         const product_detail = products.find(p => p.slug === slug);
+
+//         if (!product_detail) {
+//             return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+//         }
+//         return res.status(200).json(product_detail);
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+
+// };
+// const getChuotDetail = async (req, res) => {
+//     const slug = req.params.slug;
+//     try {
+//         const results = await getDetail(url_chuot);
+//         const products = results.map(product => ({
+//             ...product,
+//             slug: slugify(product.title),
+//             category: "chuot",
+//         }));
+//         const product_detail = products.find(p => p.slug === slug);
+
+//         if (!product_detail) {
+//             return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+//         }
+//         return res.status(200).json(product_detail);
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+
+// };
+// const getSanphamDetail = async (req, res) => {
+//     const slug = req.params.slug;
+//     try {
+//         const results = await getDetail(url_sanpham);
+//         const products = results.map(product => ({
+//             ...product,
+//             slug: slugify(product.title),
+//             category: "sanpham",
+//         }));
+//         const product_detail = products.find(p => p.slug === slug);
+
+//         if (!product_detail) {
+//             return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
+//         }
+//         return res.status(200).json(product_detail);
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+
+// };

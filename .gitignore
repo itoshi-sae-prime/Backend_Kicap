@@ -1,0 +1,28 @@
+# Node modules (thư viện cài qua npm)
+node_modules/
+
+# File môi trường (thường chứa mật khẩu, API key, v.v.)
+.env
+
+# Log file
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# File tạm thời
+*.tmp
+*.swp
+*.swo
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Nếu dùng build (nếu có)
+dist/
+build/

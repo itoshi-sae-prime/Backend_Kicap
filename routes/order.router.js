@@ -1,8 +1,10 @@
 const express = require("express");
-const {
-    orderKicap } = require('../controller/order.controller')
 const router = express.Router();
+const {
+    orderKicap, EvaluateKicap } = require('../controller/order.controller')
+
 
 router.post('/orderKicap', orderKicap);
+router.post('/sendEvalute', EvaluateKicap);
 
 module.exports = router;
