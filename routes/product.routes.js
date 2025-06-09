@@ -1,4 +1,5 @@
 const express = require("express");
+const VerifyToken = require("../middleware/verifyToken");
 const {
     getProducts,
     getProduct_keycap_bo,
@@ -12,6 +13,8 @@ const {
     getChuotDetail,
     getSanphamDetail, } = require("../controller/product.controller");
 const router = express.Router();
+
+router.get("/", VerifyToken, getProducts);
 
 router.get("/v1", getProducts);
 router.get("/keycap_bo", getProduct_keycap_bo);

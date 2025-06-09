@@ -3,11 +3,12 @@ const { evaluateMail } = require('../data/evalutenote');
 const express = require('express');
 const nodeMailer = require('nodemailer');
 const Evaluate = require("../model/evaluate");
+const OrderSchema = require("../model/order");
 const orderKicap = async (req, resp) => {
     const { fullName, phone, address, district, city, note, email, cart, total } = req.body;
 
-    if (!email || !cart || !Array.isArray(cart.cart) || cart.cart.length === 0) {
-        return resp.status(400).json({ message: "Thông tin đơn hàng không hợp lệ!" });
+    if (!fullName || !phone || !address || !district || !city || !email || !Array.isArray(cart.cart) || cart.cart.length === 0) {
+        return resp.status(400).json({ message: "Vui lòng điền đầy đủ thông tin đơn hàng!" });
     }
     console.log("Email:", process.env.EMAIL);
     console.log("Password:", process.env.PASSWORD);
@@ -79,14 +80,29 @@ const orderKicap = async (req, resp) => {
             `,
         };
         await transporter.sendMail(message);
-        return resp.status(200).json({ message: "Email đã gửi thành công!" });
+        // Gửi email xác nhận đơn hàng đến khách hàng
+
+        const orderData = {
+            user_id: req.body.email,
+            fullName: req.body.fullName,
+            phone: req.body.phone,
+            address: req.body.address,
+            district: req.body.district,
+            city: req.body.city,
+            note: req.body.note,
+            cart: req.body.cart.cart,
+            total: req.body.cart.total,
+        }
+        // Lưu đơn hàng vào cơ sở dữ liệu
+        const newOrder = await OrderSchema.create(orderData);
+        await newOrder.save();
+        return resp.status(200).json({ message: "Email đã gửi thành công!", data: "Completed" });
+
     } catch (err) {
         console.error("Lỗi server:", err);
         return resp.status(500).json({ message: "Lỗi server", error: err });
     }
 };
-
-
 
 const EvaluateKicap = async (req, resp) => {
     const { name, phone, email, message } = req.body;
