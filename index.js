@@ -29,13 +29,9 @@ app.use(bodyParse.urlencoded({
 
 // CORS cấu hình chi tiết hơn
 const corsOptions = {
-  origin: [
-    'https://frontend-kicap.vercel.app', 
-    'http://localhost:3000'              
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOptions));
 
